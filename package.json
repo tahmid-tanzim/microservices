@@ -1,0 +1,20 @@
+{
+  "name": "mean-retail",
+  "version": "0.0.1",
+  "description": "An Online Shop builds with MongoDB, Express.js, AngularJS, Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "MongoDB",
+    "Express.js",
+    "AngularJS",
+    "Node.js"
+  ],
+  "author": "Tahmid Tanzim <tahmid.tanzim@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^4.3.5"
+  }
+}

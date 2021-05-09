@@ -15,6 +15,6 @@
   "author": "Tahmid Tanzim <tahmid.tanzim@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^4.3.5"
+    "mongoose": ">=5.7.5"
   }
 }

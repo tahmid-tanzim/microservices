@@ -1,7 +1,8 @@
-# from django.shortcuts import get_object_or_404
+import random
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Product
+from rest_framework.views import APIView
+from .models import Product, User
 from .serializers import ProductSerializer
 
 
@@ -42,3 +43,12 @@ class ProductViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Product.DoesNotExist:
             return Response({"message": "Sorry! Product DoesNotExist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UserAPIView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        user = random.choice(users)
+        return Response({
+            "id": user.id
+        })

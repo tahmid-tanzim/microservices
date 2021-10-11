@@ -6,5 +6,5 @@ channel = connection.channel()
 
 
 def publish():
-    channel.basic_publish(exchange="", routing_key="web_mq", body="test publish hello")
+    channel.basic_publish(exchange="", routing_key="admin_mq", body="test publish hello")
 

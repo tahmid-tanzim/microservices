@@ -11,8 +11,8 @@ source env/bin/activate  # On Windows use `env\Scripts\activate`
 ```bash
 pip install django
 pip install djangorestframework
-pip install psycopg2-binary
 pip install django-cors-headers
+pip install psycopg2-binary
 pip install pika
 ```
 

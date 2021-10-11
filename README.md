@@ -24,7 +24,7 @@ python manage.py migrate
 
 ### Flask Migrations
 ```shell
-docker-compose exec web bash
+docker-compose exec backend bash
 python manager.py db init
 python manager.py db migrate
 python manager.py db upgrade

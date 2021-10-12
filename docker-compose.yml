@@ -1,0 +1,71 @@
+version: "3.8"
+services:
+  admin_db:
+    image: postgres:14.0-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=C0V1D19
+      - POSTGRES_DB=microservice_admin_db
+    ports:
+      - "54320:5432"
+    volumes:
+      - ./admin/data/db:/var/lib/postgresql/data/
+
+  admin_backend:
+    build:
+      context: admin
+      dockerfile: Dockerfile
+    command: ["./wait-for-it.sh", "admin_db:5432", "--", "python", "admin/manage.py", "runserver", "0.0.0.0:8080"]
+    ports:
+      - 8000:8080
+    volumes:
+      - .:/app
+    depends_on:
+      - admin_db
+    restart: on-failure
+
+  admin_queue:
+    build:
+      context: admin
+      dockerfile: Dockerfile
+    command: "python consumer.py"
+    depends_on:
+      - admin_db
+      - admin_backend
+
+  web_db:
+    image: mysql:5.7.35
+    restart: always
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=C0V1D19
+      - MYSQL_ROOT_PASSWORD=C0V1D19
+      - MYSQL_DATABASE=microservice_web_db
+    ports:
+      - "33060:3306"
+    volumes:
+      - ./web_app/data/db:/var/lib/mysql
+
+  web_backend:
+    build:
+      context: web_app
+      dockerfile: Dockerfile
+    command: ["./wait-for-it.sh", "web_db:3306", "--", "python", "web_app/main.py"]
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - 8001:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - web_db
+
+  web_queue:
+    build:
+      context: web_app
+      dockerfile: Dockerfile
+    command: "python consumer.py"
+    depends_on:
+      - web_db
+      - web_backend

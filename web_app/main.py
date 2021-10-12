@@ -1,7 +1,7 @@
 import requests
 import os
 from dataclasses import dataclass
-from flask import Flask, jsonify, abort, Response
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy import UniqueConstraint
@@ -10,14 +10,16 @@ from producer import publish
 
 load_dotenv()
 app = Flask(__name__)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")
+
 CORS(app)
 db = SQLAlchemy(app)
-
 admin = {
     "host": os.getenv("ADMIN_HOST"),
     "port": os.getenv("ADMIN_PORT")
 }
+
 
 @dataclass
 class Product(db.Model):
@@ -66,7 +68,6 @@ def like(productId):
     except BaseException as e:
         # TODO - user_id & product_id unique constraints is NOT working.
         print(e.message, e.args)
-        # abort(400, f"Sorry! User-{user['id']} already liked Product-{productId}")
         return jsonify({
             "message": f"Sorry! User-{user['id']} already liked Product-{productId}"
         }), 400

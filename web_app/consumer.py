@@ -1,8 +1,12 @@
 import pika
 import json
+import os
+from dotenv import load_dotenv
 from main import Product, db
 
-params = pika.URLParameters("amqps://mdheidwz:WEeFRGeW9XZSO1bjK2HC0uHh4P-Tf-38@codfish.rmq.cloudamqp.com/mdheidwz")
+load_dotenv()
+AMQP_URL = os.getenv("AMQP_URL")
+params = pika.URLParameters(AMQP_URL)
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 channel.queue_declare(queue="admin_2_web_mq")

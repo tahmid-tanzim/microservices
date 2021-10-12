@@ -19,6 +19,7 @@ services:
     command: "python consumer.py"
     depends_on:
       - db
+      - backend
 
   db:
     image: postgres:14.0-alpine

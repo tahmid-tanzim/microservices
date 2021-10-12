@@ -1,16 +1,23 @@
 import requests
+import os
 from dataclasses import dataclass
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, Response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import UniqueConstraint
+# from sqlalchemy import UniqueConstraint
+from dotenv import load_dotenv
 from producer import publish
 
+load_dotenv()
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:C0V1D19@db/microservice_web_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")
 CORS(app)
 db = SQLAlchemy(app)
 
+admin = {
+    "host": os.getenv("ADMIN_HOST"),
+    "port": os.getenv("ADMIN_PORT")
+}
 
 @dataclass
 class Product(db.Model):
@@ -34,30 +41,39 @@ class ProductUser(db.Model):
 @app.route("/api/products")
 def index():
     products = Product.query.all()
-    return jsonify(products)
+    return jsonify(products), 200
 
 
 @app.route("/api/products/<int:productId>/like", methods=["post"])
 def like(productId):
-    request = requests.get("http://docker.for.mac.localhost:8000/api/user")
+    product = Product.query.get(productId)
+    if product is None:
+        return jsonify({
+            "message": f"Sorry! Product ID ({productId}) DoesNotExist"
+        }), 404
+
+    # TODO -  Error handle required for HTTP request
+    request = requests.get(f"http://{admin['host']}:{admin['port']}/api/user")
     user = request.json()
 
     try:
-        productUser = ProductUser(
-            user_id=user["id"],
-            product_id=productId
-        )
+        productUser = ProductUser(user_id=user["id"], product_id=productId)
         db.session.add(productUser)
         db.session.commit()
 
         # Send Event to Admin
         publish("PRODUCT_LIKED", {"id": productId})
-    except:
-        abort(400, f"Sorry! User-{user['id']} already liked Product-{productId}")
+    except BaseException as e:
+        # TODO - user_id & product_id unique constraints is NOT working.
+        print(e.message, e.args)
+        # abort(400, f"Sorry! User-{user['id']} already liked Product-{productId}")
+        return jsonify({
+            "message": f"Sorry! User-{user['id']} already liked Product-{productId}"
+        }), 400
 
     return jsonify({
-        "message": f"You've liked product ID {productId}"
-    })
+        "message": f"User ID ({user['id']}) liked Product ID ({productId})"
+    }), 201
 
 
 if __name__ == "__main__":

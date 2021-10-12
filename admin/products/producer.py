@@ -1,7 +1,8 @@
 import pika
 import json
+from main.settings import AMQP_URL
 
-params = pika.URLParameters("amqps://mdheidwz:WEeFRGeW9XZSO1bjK2HC0uHh4P-Tf-38@codfish.rmq.cloudamqp.com/mdheidwz")
+params = pika.URLParameters(AMQP_URL)
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 

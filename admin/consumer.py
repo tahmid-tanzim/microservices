@@ -1,14 +1,14 @@
-import os
-import django
 import pika
 import json
-
 # Setup Django to load Model
+import os
+import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "main.settings")
 django.setup()
 from products.models import Product
+from main.settings import AMQP_URL
 
-params = pika.URLParameters("amqps://mdheidwz:WEeFRGeW9XZSO1bjK2HC0uHh4P-Tf-38@codfish.rmq.cloudamqp.com/mdheidwz")
+params = pika.URLParameters(AMQP_URL)
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 channel.queue_declare(queue="web_2_admin_mq")

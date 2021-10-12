@@ -5,11 +5,11 @@ from main import Product, db
 params = pika.URLParameters("amqps://mdheidwz:WEeFRGeW9XZSO1bjK2HC0uHh4P-Tf-38@codfish.rmq.cloudamqp.com/mdheidwz")
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
-channel.queue_declare(queue="web_mq")
+channel.queue_declare(queue="admin_2_web_mq")
 
 
 def callback(ch, method, properties, body):
-    print("\nReceived from web_mq")
+    print("\nReceived from admin_2_web_mq")
     data = json.loads(body)
 
     if properties.content_type == "PRODUCT_CREATED":
@@ -45,7 +45,7 @@ def callback(ch, method, properties, body):
             print("Sorry! Product DoesNotExist", data["id"])
 
 
-channel.basic_consume(queue="web_mq", on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue="admin_2_web_mq", on_message_callback=callback, auto_ack=True)
 print("Started consuming")
 channel.start_consuming()
 channel.close()

@@ -10,7 +10,7 @@ def publish(method, body):
     prop = pika.BasicProperties(method)
     channel.basic_publish(
         exchange="",
-        routing_key="admin_2_web_mq",
+        routing_key="web_2_admin_mq",
         body=json.dumps(body),
         properties=prop
     )

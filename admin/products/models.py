@@ -8,5 +8,6 @@ class Product(models.Model):
 
 
 class User(models.Model):
-    pass
+    name = models.CharField(max_length=100, null=True)
+    email = models.EmailField(max_length=50, unique=True, null=True)
 

@@ -20,6 +20,7 @@ pip install pika
 docker-compose exec backend bash
 python manage.py makemigrations
 python manage.py migrate
+python manage.py loaddata default_users
 ```
 
 ### Flask Migrations

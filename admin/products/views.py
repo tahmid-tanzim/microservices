@@ -55,5 +55,7 @@ class UserAPIView(APIView):
         users = User.objects.all()
         user = random.choice(users)
         return Response({
-            "id": user.id
+            "id": user.id,
+            "name": user.name,
+            "email": user.email
         })

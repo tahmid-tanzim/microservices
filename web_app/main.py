@@ -1,9 +1,9 @@
+import requests
 from dataclasses import dataclass
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
-from requests import request
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:C0V1D19@db/microservice_web_db"
@@ -37,9 +37,11 @@ def index():
     return jsonify(products)
 
 
-@app.route("/api/products/<int:id>//like", methods=["post"])
+@app.route("/api/products/<int:id>/like", methods=["post"])
 def like(id):
-    pass
+    print("Product ID", id)
+    request = requests.get("http://docker.for.mac.localhost:8000/api/user")
+    return request.json()
 
 
 if __name__ == "__main__":

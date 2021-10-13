@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=C0V1D19
       - POSTGRES_DB=microservice_admin_db
     ports:
-      - 54320:5432
+      - "54320:5432"
     volumes:
       - ./admin/data/db:/var/lib/postgresql/data/
 
@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile
     command: ["./wait-for-it.sh", "admin_db:5432", "--", "python", "admin/manage.py", "runserver", "0.0.0.0:8080"]
     ports:
-      - 8000:8080
+      - "8000:8080"
     volumes:
       - .:/app
     depends_on:
@@ -43,7 +43,7 @@ services:
       - MYSQL_ROOT_PASSWORD=C0V1D19
       - MYSQL_DATABASE=microservice_web_db
     ports:
-      - 33060:3306
+      - "33060:3306"
     volumes:
       - ./web_app/data/db:/var/lib/mysql
 
@@ -55,7 +55,7 @@ services:
     environment:
       - FLASK_ENV=development
     ports:
-      - 8001:5000
+      - "8001:5000"
     volumes:
       - .:/app
     depends_on:
@@ -78,6 +78,6 @@ services:
 #      - RABBITMQ_DEFAULT_PASS=C0V1D19MQ
 #    ports:
 #      # AMQP protocol port
-#      - 5672:5672
+#      - "5672:5672"
 #      # HTTP management UI
-#      - 15672:15672
+#      - "15672:15672"

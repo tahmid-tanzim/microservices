@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=C0V1D19
       - POSTGRES_DB=microservice_admin_db
     ports:
-      - "54320:5432"
+      - 54320:5432
     volumes:
       - ./admin/data/db:/var/lib/postgresql/data/
 
@@ -29,7 +29,7 @@ services:
     build:
       context: admin
       dockerfile: Dockerfile
-    command: "python consumer.py"
+    command: ["python", "consumer.py"]
     depends_on:
       - admin_db
       - admin_backend
@@ -43,7 +43,7 @@ services:
       - MYSQL_ROOT_PASSWORD=C0V1D19
       - MYSQL_DATABASE=microservice_web_db
     ports:
-      - "33060:3306"
+      - 33060:3306
     volumes:
       - ./web_app/data/db:/var/lib/mysql
 
@@ -60,12 +60,24 @@ services:
       - .:/app
     depends_on:
       - web_db
+    restart: on-failure
 
   web_queue:
     build:
       context: web_app
       dockerfile: Dockerfile
-    command: "python consumer.py"
+    command: ["python", "consumer.py"]
     depends_on:
       - web_db
       - web_backend
+
+#  rabbitmq3:
+#    image: rabbitmq:3.8.23-management-alpine
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=rabbit
+#      - RABBITMQ_DEFAULT_PASS=C0V1D19MQ
+#    ports:
+#      # AMQP protocol port
+#      - 5672:5672
+#      # HTTP management UI
+#      - 15672:15672
